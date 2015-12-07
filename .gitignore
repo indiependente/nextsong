@@ -58,3 +58,6 @@ target/
 
 # Data Folder
 data/
+
+# Python VirtualEnv
+venv/

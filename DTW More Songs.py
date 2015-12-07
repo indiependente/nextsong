@@ -40,11 +40,21 @@ for subdir, dirs, files in os.walk(rootdir):
 #            get_song_info(h5list[-1])
             pitches.append(hdf5_getters.get_segments_pitches(h5list[-1]))
             h5list[-1].close()
-            del h5list
-h5sample = sample(pitches, 100)
+del h5list
+n = 3
+h5sample = sample(pitches, n)
 
 
 # In[6]:
 
-[ dtw(x, y, dist=norm2) for i, x in enumerate(h5sample) for j, y in enumerate(h5sample) if i != j ]
+# print [ [(i,j,dtw(x, y, dist=norm2) for i, x in enumerate(h5sample)] for j, y in enumerate(h5sample) if i != j ]
 
+distance_matrix = np.zeros((n,n)) 
+
+for i in xrange(n):
+    for j in xrange(i, n):
+        print '(%s,%s)' % (i,j)
+        distance_matrix[i][j] = dtw(h5sample[i], h5sample[j], norm2)
+
+print np.shape(distance_matrix)
+print distance_matrix

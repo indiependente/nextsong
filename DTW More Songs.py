@@ -1,8 +1,6 @@
 
 # coding: utf-8
 
-# In[1]:
-
 #get_ipython().magic(u'matplotlib inline')
 #import matplotlib
 #import matplotlib.pyplot as plt
@@ -19,9 +17,6 @@ from numpy.linalg import norm
 import cPickle as pickle
 #matplotlib.rcParams['figure.figsize'] = (10.0, 8.0)
 
-
-# In[2]:
-
 def norm2(x, y):
     return norm(x - y, ord=2)
 
@@ -31,15 +26,8 @@ def get_song_info(h5):
 def pickle_this(data, filename):
     pickle.dump(data, open(filename, 'wb'))    
 
-# In[3]:
-
-
 h5sample = read_sample()
 n = len(h5sample)
-# print 'n:', n
-# In[6]:
-
-# print [ [(i,j,dtw(x, y, dist=norm2) for i, x in enumerate(h5sample)] for j, y in enumerate(h5sample) if i != j ]
 
 distance_matrix = np.zeros((n,n))
 

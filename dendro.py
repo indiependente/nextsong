@@ -1,18 +1,14 @@
+import numpy as np
 import scipy
 import pylab
 import scipy.cluster.hierarchy as sch
 import cPickle as pickle
 
-def fill_lower_triangle(matrix):
-    """matrix: N x N"""
-    n = len(matrix)
-    for i in xrange(n):
-        for j in xrange(i+1, n):
-            matrix[j][i] = matrix[i][j]
-    return matrix
+def symmetrize(a):
+    return a + a.T - np.diag(a.diagonal())
 
 dist_matx = pickle.load (open('distance_matrix.p', 'rb'))
-D = fill_lower_triangle(dist_matx)
+D = symmetrize(dist_matx)
 
 # # Compute and plot first dendrogram.
 fig = pylab.figure(figsize=(8,8))

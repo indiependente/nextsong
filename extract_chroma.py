@@ -6,21 +6,22 @@ import cPickle as pickle
 from random import sample
 
 def dump_pitches(rootdir = './data/', filename = 'pitches.p'):
-    h5list = []
     pitches = []
     tags = []
 
     for subdir, dirs, files in os.walk(rootdir):
         for f in files:
             if f.lower().endswith('.h5'):
-                h5list.append(hdf5_getters.open_h5_file_read(os.path.join(subdir, f)))
-                pitches.append(hdf5_getters.get_segments_pitches(h5list[-1]))
-                tags.append('%s - %s - %s - %s' % (hdf5_getters.get_artist_name(h5list[-1]), hdf5_getters.get_title(h5list[-1]), hdf5_getters.get_year(h5list[-1]), hdf5_getters.get_tempo(h5list[-1])))
-                h5list[-1].close()
-    del h5list
+                h5f = hdf5_getters.open_h5_file_read(os.path.join(subdir, f))
+                seg_ptcs = hdf5_getters.get_segments_pitches(h5f)
+                if 500 <= seg_ptcs.shape[0] <= 1500:
+                    pitches.append(seg_ptcs)
+                    tags.append('%s - %s - %s - %s' % (hdf5_getters.get_artist_name(h5f), hdf5_getters.get_title(h5f), hdf5_getters.get_year(h5f), hdf5_getters.get_tempo(h5f)))
+                h5f.close()
 
     pickle.dump( pitches, open( filename, 'wb' ) )
     pickle.dump( tags, open( 'tags.p', 'wb' ) )
+    print 'Saved {} pitches.'.format(len(pitches))
 
 
 def dump_sample(n = 100, filename = 'sample_pitches.p'):

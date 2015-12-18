@@ -7,7 +7,25 @@ import numpy as np
 import cPickle as pickle
 from pydtw import dtw2d
 from joblib import Parallel, delayed
+from collections import defaultdict
+import itertools
+import joblib.parallel
 
+class CallBack(object):
+    completed = defaultdict(int)
+
+    def __init__(self, index, parallel):
+        self.index = index
+        self.parallel = parallel
+
+    def __call__(self, index):
+        CallBack.completed[self.parallel] += 1
+        if CallBack.completed[self.parallel] % 743 == 0:
+            print("{}%".format(CallBack.completed[self.parallel]/74))
+        if self.parallel._original_iterable:
+            self.parallel.dispatch_next()
+
+joblib.parallel.CallBack = CallBack
 
 # In[81]:
 
@@ -15,23 +33,15 @@ def pickle_this(data, filename='distance_matrix.p'):
     pickle.dump(data, open(filename, 'wb'))
 
 
-# In[82]:
-
-def inner_loop(sample, i, n):
-    row = np.zeros((n,))
-    for j in xrange(i, n):
-        row[j] = dtw2d(sample[i], sample[j])[-1,-1]
-    return row
-
 
 # In[83]:
 
-sample = pickle.load( open( 'sample_pitches.p', 'rb' ) )
-n = sample.shape[0]
+sample = pickle.load( open( 'pitches.p', 'rb' ) )
+n = len(sample)
 
 
 # In[95]:
 
-distance_matrix = np.asmatrix(Parallel(n_jobs=6)(delayed(inner_loop)(sample, i, n) for i in range(n)))
+distance_matrix = np.asmatrix(Parallel(n_jobs=6)(delayed(dtw2d)(sample[i], sample[j]) for i,j in itertools.product(range(n), range(n)) if i < j))
 pickle_this(distance_matrix)
 

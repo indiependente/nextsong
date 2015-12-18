@@ -2,7 +2,7 @@ from numpy import array, zeros, argmin, inf
 from numpy.linalg import norm
 
 
-def dtw(x, y, dist=lambda x, y: norm(x - y, ord=1)):
+def dtw(x, y, dist=lambda x, y: norm(x - y, ord=2)):
     """ Computes the DTW of two sequences.
 
     :param array x: N1*M array

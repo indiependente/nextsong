@@ -2,7 +2,7 @@ import numpy as np
 
 import sklearn
 from sklearn.manifold import TSNE
-
+from dendro import symmetrize
 import matplotlib.pyplot as plt
 import matplotlib
 
@@ -33,7 +33,7 @@ def scatter(x):
 # Random state. If None, use the numpy.random singleton 
 RS = None 
 
-D = pickle.load(open('distance_matrix.p', 'rb'))
+D = symmetrize(pickle.load(open('distance_matrix.p', 'rb')))
 
 proj = TSNE(n_components=2, random_state=RS, metric='precomputed').fit_transform(D)
 scatter(proj)
